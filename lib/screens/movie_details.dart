@@ -1,17 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../widgets/movie.dart';
+import '../models/genre.dart';
+import '../repositories/local_repository.dart';
+import '../models/movie.dart';
 import '../widgets/movie_header.dart';
 import '../utils/ui_constants.dart';
 import '../widgets/movie_actions.dart';
 import '../widgets/movie_overview.dart';
 
-class MovieDetails extends StatelessWidget {
+class MovieDetails extends StatefulWidget {
   final Movie movie;
-  const MovieDetails(
-    this.movie, {
+  const MovieDetails({
     super.key,
+    required this.movie,
   });
+
+  @override
+  State<MovieDetails> createState() => _MovieDetailsState();
+}
+
+class _MovieDetailsState extends State<MovieDetails> {
+  final LocalRepository repository = LocalRepository();
+  late final List<int> genresIds;
+  late Future<List<Genre>> genresList;
+  late final Future<List<String>> genresNames;
+  @override
+  void initState() {
+    genresIds = widget.movie.genreIds;
+    genresNames = repository.getGenresByMovie(genresIds);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,8 +48,12 @@ class MovieDetails extends StatelessWidget {
         backgroundColor: CupertinoColors.darkBackgroundGray,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+          ),
         ),
         actions: <Widget>[
           IconButton(
@@ -55,18 +78,18 @@ class MovieDetails extends StatelessWidget {
         child: Column(
           children: [
             MovieHeader(
-              movie.title,
-              movie.fullBackdropPath,
+              widget.movie.title,
+              widget.movie.fullBackdropPath,
             ),
             MovieActions(
-              movie.voteAverage,
-              movie.voteCount,
+              widget.movie.voteAverage,
+              widget.movie.voteCount,
             ),
             MovieOverview(
-              movie.genreIds,
-              movie.overview,
-              movie.fullPosterPath,
-              movie.releaseDate,
+              genresNames,
+              widget.movie.overview,
+              widget.movie.fullPosterPath,
+              widget.movie.releaseDate,
             ),
           ],
         ),
