@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/movie_details.dart';
-import 'widgets/movie.dart';
-
+import 'screens/home_page.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -11,18 +9,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Movie marioMovie = MovieFactory.movieSample();
     return MaterialApp(
       theme: ThemeData(
         brightness: Brightness.dark,
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.black,
         ),
       ),
-      home: Scaffold(
+      home: const Scaffold(
         body: SafeArea(
           child: Center(
-            child: MovieDetails(marioMovie),
+            child: HomePage(),
           ),
         ),
       ),

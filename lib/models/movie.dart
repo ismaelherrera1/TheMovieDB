@@ -1,7 +1,7 @@
 class Movie {
   final bool adult;
   final String backdropPath;
-  final List<String> genreIds;
+  final List<int> genreIds;
   final int id;
   final String originalLanguage;
   final String overview;
@@ -32,31 +32,22 @@ class Movie {
   String get fullPosterPath => 'https://image.tmdb.org/t/p/w500/$posterPath';
   String get fullBackdropPath =>
       'https://image.tmdb.org/t/p/w500/$backdropPath';
-}
 
-class MovieFactory {
-  static Movie movieSample() {
+  factory Movie.fromJson(Map<String, dynamic> json) {
     return Movie(
-      adult: false,
-      backdropPath: '/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg',
-      genreIds: [
-        "Animation",
-        "Family",
-        "Adventure",
-        "Fantasy",
-        "Comedy",
-      ],
-      id: 455476,
-      originalLanguage: 'en',
-      overview:
-          'While working underground to fix a water main, Brooklyn plumbers—and brothers—Mario and Luigi are transported down a mysterious pipe and wander into a magical new world. But when the brothers are separated, Mario embarks on an epic quest to find Luigi.',
-      popularity: 3963.447,
-      posterPath: '/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg',
-      releaseDate: '2023-04-27',
-      title: 'The Super Mario Bros. Movie',
-      video: false,
-      voteAverage: 7.8,
-      voteCount: 367,
+      adult: json["adult"],
+      backdropPath: json["backdrop_path"],
+      genreIds: List<int>.from(json["genre_ids"]),
+      id: json["id"],
+      originalLanguage: json["original_language"],
+      overview: json["overview"],
+      popularity: json["popularity"],
+      posterPath: json["poster_path"],
+      releaseDate: json["release_date"],
+      title: json["title"],
+      video: json["video"],
+      voteAverage: json["vote_average"].toDouble(),
+      voteCount: json["vote_count"],
     );
   }
 }

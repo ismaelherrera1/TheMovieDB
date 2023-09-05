@@ -4,6 +4,7 @@ import '../utils/ui_constants.dart';
 class MovieActions extends StatefulWidget {
   final double voteAverage;
   int voteCount;
+
   MovieActions(
     this.voteAverage,
     this.voteCount, {

@@ -1,15 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../utils/ui_constants.dart';
 
 class MovieOverview extends StatelessWidget {
-  final List<String> genreIds;
+  final Future<List<String>> genres;
   final String overview;
   final String posterPath;
   final String releaseDate;
 
   const MovieOverview(
-    this.genreIds,
+    this.genres,
     this.overview,
     this.posterPath,
     this.releaseDate, {
@@ -33,12 +32,32 @@ class MovieOverview extends StatelessWidget {
           Expanded(
             child: Wrap(
               children: [
-                Text(
-                  '$genresSubtitle $genreIds',
-                  style: const TextStyle(
-                    fontSize: UIConstants.genresFontSize,
-                    fontFamily: 'Poppins',
-                  ),
+                FutureBuilder(
+                  future: genres,
+                  builder: (
+                    BuildContext context,
+                    AsyncSnapshot<dynamic> snapshot,
+                  ) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          snapshot.error.toString(),
+                        ),
+                      );
+                    } else {
+                      return Text(
+                        '$genresSubtitle ${snapshot.data}',
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: UIConstants.genresFontSize,
+                        ),
+                      );
+                    }
+                  },
                 ),
                 Text(
                   '$releaseDateSubtitle $releaseDate',
