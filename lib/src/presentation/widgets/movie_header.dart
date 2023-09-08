@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import '../utils/ui_constants.dart';
+import '../../core/util/ui_constants.dart';
 
 class MovieHeader extends StatelessWidget {
   final String title;

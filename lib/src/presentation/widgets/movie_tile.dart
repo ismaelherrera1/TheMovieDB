@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../screens/movie_details.dart';
-import '../models/movie.dart';
-import '../utils/ui_constants.dart';
+import '../views/movie_details.dart';
+import '../../domain/entities/movie.dart';
+import '../../core/util/ui_constants.dart';
 
 class MovieTile extends StatelessWidget {
   const MovieTile({

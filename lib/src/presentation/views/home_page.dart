@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../repositories/local_repository.dart';
-import '../models/genre.dart';
-import '../models/movie.dart';
-import '../utils/ui_constants.dart';
+import '../../data/repository_implementation/local_repository.dart';
+import '../../domain/entities/genre.dart';
+import '../../domain/entities/movie.dart';
+import '../../core/util/ui_constants.dart';
 import '../widgets/genre_tile.dart';
 import '../widgets/movie_tile.dart';
 import '../widgets/nav_bar.dart';

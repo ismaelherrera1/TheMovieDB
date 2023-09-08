@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../interfaces/i_movie_repository.dart';
-import '../models/genre.dart';
-import '../models/movie.dart';
+import '../../domain/repositories/i_movie_repository.dart';
+import '../../domain/entities/genre.dart';
+import '../../domain/entities/movie.dart';
 
 class LocalRepository extends IRepository {
   static const String genresPath = 'assets/mocks/genres.json';
