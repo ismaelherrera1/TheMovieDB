@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/ui_constants.dart';
+import '../../core/util/ui_constants.dart';
 
 class MovieActions extends StatefulWidget {
   final double voteAverage;

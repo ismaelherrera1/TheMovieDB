@@ -1,5 +1,5 @@
-import '../models/genre.dart';
-import '../models/movie.dart';
+import '../entities/genre.dart';
+import '../entities/movie.dart';
 
 abstract class IRepository<T> {
   Future<List<Movie>> readMovieData();

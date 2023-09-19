@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../utils/ui_constants.dart';
-import '../models/genre.dart';
+import '../../core/util/ui_constants.dart';
+import '../../domain/entities/genre.dart';
 
 class GenreTile extends StatelessWidget {
   const GenreTile({
@@ -13,7 +13,6 @@ class GenreTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(
           UIConstants.genresBorderRadius,
         ),

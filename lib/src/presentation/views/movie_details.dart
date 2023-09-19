@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../models/genre.dart';
-import '../repositories/local_repository.dart';
-import '../models/movie.dart';
+import '../../domain/entities/genre.dart';
+import '../../data/repository_implementation/local_repository.dart';
+import '../../domain/entities/movie.dart';
 import '../widgets/movie_header.dart';
-import '../utils/ui_constants.dart';
+import '../../core/util/ui_constants.dart';
 import '../widgets/movie_actions.dart';
 import '../widgets/movie_overview.dart';
 
