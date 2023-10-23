@@ -1,104 +1,88 @@
 import 'package:flutter/material.dart';
-import '../../data/repository_implementation/local_repository.dart';
-import '../../domain/entities/genre.dart';
-import '../../domain/entities/movie.dart';
 import '../../core/util/ui_constants.dart';
-import '../widgets/genre_tile.dart';
-import '../widgets/movie_tile.dart';
+import '../../data/repository_implementation/repository_implementation.dart';
+import '../../domain/use_cases/implementation/now_playing_use_case.dart';
+import '../../domain/use_cases/implementation/popular_movies_use_case.dart';
+import '../../domain/use_cases/implementation/top_rated_use_case.dart';
+import '../../domain/use_cases/implementation/upcoming_movies_use_case.dart';
+import '../bloc/movies_bloc.dart';
+import '../widgets/my_drawer.dart';
 import '../widgets/nav_bar.dart';
+import 'about_us_screen.dart';
+import 'popular_movies_screen.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+  HomePage({super.key});
+  final RemoteRepository repository = RemoteRepository();
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  LocalRepository localRepository = LocalRepository();
-  late Future<List<Movie>> movies;
-  late Future<List<Genre>> genres;
+  final _controller = PageController();
+  int _selectedItem = 0;
+  final _pages = [
+    PopularMoviesScreen(
+        bloc: MoviesBloc(
+      popularMoviesUseCase:
+          PopularMoviesUseCase(repository: RemoteRepository()),
+      topRatedMoviesUseCase: TopRatedUseCase(
+        repository: RemoteRepository(),
+      ),
+      nowPlayingMoviesUseCase:
+          NowPlayingUseCase(repository: RemoteRepository()),
+      upcomingMoviesUseCase:
+          UpcomingMoviesUseCase(repository: RemoteRepository()),
+    )),
+    const AboutUsScreen()
+  ];
   @override
   void initState() {
-    movies = localRepository.readMovieData();
-    genres = localRepository.readGenreData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: UIConstants.genreScrollHeight,
-            child: FutureBuilder(
-              future: genres,
-              builder: (
-                BuildContext context,
-                AsyncSnapshot snapshot,
-              ) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text(snapshot.error.toString()),
-                  );
-                } else {
-                  return ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (
-                      BuildContext context,
-                      int index,
-                    ) {
-                      return Padding(
-                        padding: const EdgeInsets.all(
-                          UIConstants.defaultPadding,
-                        ),
-                        child: GenreTile(
-                          genre: snapshot.data![index],
-                        ),
-                      );
-                    },
-                  );
-                }
-              },
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: const Text(
+          UIConstants.movieAppTitle,
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            letterSpacing: UIConstants.titleLetterSpacing,
           ),
-          Expanded(
-            child: FutureBuilder(
-              future: movies,
-              builder: (
-                BuildContext context,
-                AsyncSnapshot snapshot,
-              ) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (
-                      BuildContext context,
-                      int index,
-                    ) {
-                      return MovieTile(
-                        movie: snapshot.data![index],
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-          ),
-        ],
+        ),
+        centerTitle: true,
       ),
-      bottomNavigationBar: const NavBar(),
+      drawer: MyDrawer(
+          bloc: MoviesBloc(
+        popularMoviesUseCase: PopularMoviesUseCase(
+          repository: widget.repository,
+        ),
+        topRatedMoviesUseCase: TopRatedUseCase(
+          repository: widget.repository,
+        ),
+        nowPlayingMoviesUseCase: NowPlayingUseCase(
+          repository: widget.repository,
+        ),
+        upcomingMoviesUseCase: UpcomingMoviesUseCase(
+          repository: widget.repository,
+        ),
+      )),
+      body: PageView(
+        controller: _controller,
+        children: _pages,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedItem = index;
+          });
+        },
+      ),
+      bottomNavigationBar: NavBar(
+        selectedItem: _selectedItem,
+        controller: _controller,
+      ),
     );
   }
 }
