@@ -1,8 +1,8 @@
-import '../entities/genre.dart';
-import '../entities/movie.dart';
+import '../../core/util/data_state.dart';
+import '../../core/util/enum_categories.dart';
+import '../../data/model/movie_model.dart';
 
 abstract class IRepository<T> {
-  Future<List<Movie>> readMovieData();
-  Future<List<Genre>> readGenreData();
-  Future<List<String>> getGenresByMovie(List<int> movieGenresIds);
+  Future<DataState<List<MovieDataModel>>> getMovies(Categories category);
+  Future<T> getGenres();
 }

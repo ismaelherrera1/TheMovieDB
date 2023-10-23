@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/util/ui_constants.dart';
+import '../../core/util/widget_keys.dart';
 import '../../domain/entities/genre.dart';
 
 class GenreTile extends StatelessWidget {
@@ -12,11 +13,12 @@ class GenreTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: const Key(Keys.genreTileContainer,),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
           UIConstants.genresBorderRadius,
         ),
-        color: Colors.black,
+        color: Colors.red,
         boxShadow: const [
           BoxShadow(
             color: Colors.black87,
@@ -30,10 +32,10 @@ class GenreTile extends StatelessWidget {
         ],
       ),
       child: Text(
-        genre.name,
+        key: const Key(Keys.genreTileNameText,),
+        ' ${genre.name} ',
         style: const TextStyle(
-          fontSize: UIConstants.subtitleFontSize,
-          fontWeight: FontWeight.bold,
+          fontSize: UIConstants.genresFontSize,
         ),
       ),
     );

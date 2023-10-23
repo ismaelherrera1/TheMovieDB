@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/util/widget_keys.dart';
 import '../views/movie_details.dart';
 import '../../domain/entities/movie.dart';
 import '../../core/util/ui_constants.dart';
@@ -10,11 +11,16 @@ class MovieTile extends StatelessWidget {
   });
   final Movie movie;
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(
+    BuildContext context,
+  ) {
+    return Column(
       children: [
         Expanded(
           child: Container(
+            key: const Key(
+              Keys.movieTilePosterPathContainer,
+            ),
             padding: const EdgeInsets.all(
               UIConstants.defaultPadding,
             ),
@@ -23,24 +29,31 @@ class MovieTile extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                  movie.fullBackdropPath,
+                  movie.fullPosterPath,
                 ),
                 fit: BoxFit.cover,
                 opacity: UIConstants.tilesOpacity,
               ),
             ),
-            child: Wrap(
-              direction: Axis.vertical,
-              spacing: UIConstants.tileElementsSpacing,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+                  key: const Key(
+                    Keys.movieTileMovieTitle,
+                  ),
                   movie.title,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontFamily: 'Poppins',
+                    fontFamily: UIConstants.fontFamily,
                     fontSize: UIConstants.tileTitleFontsize,
                   ),
                 ),
                 TextButton(
+                  key: const Key(
+                    Keys.movieTileButton,
+                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -60,7 +73,7 @@ class MovieTile extends StatelessWidget {
                     UIConstants.detailsTextButton,
                     style: TextStyle(
                       color: Colors.red,
-                      fontFamily: 'Poppins',
+                      fontFamily: UIConstants.fontFamily,
                     ),
                   ),
                 ),

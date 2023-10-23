@@ -1,24 +1,46 @@
 import 'package:flutter/material.dart';
+import '../../core/util/enum_states.dart';
+import '../../core/util/genre_converter.dart';
 import '../../core/util/ui_constants.dart';
+import '../../core/util/widget_keys.dart';
+import '../../domain/entities/genre.dart';
+import 'genre_tile.dart';
 
-class MovieOverview extends StatelessWidget {
-  final Future<List<String>> genres;
+class MovieOverview extends StatefulWidget {
+  final Stream stream;
+  final List<int> genresIds;
   final String overview;
   final String posterPath;
   final String releaseDate;
 
-  const MovieOverview(
-    this.genres,
-    this.overview,
-    this.posterPath,
-    this.releaseDate, {
+  const MovieOverview({
+    required this.stream,
+    required this.genresIds,
+    required this.overview,
+    required this.posterPath,
+    required this.releaseDate,
     super.key,
   });
-  static const double posterHeight = 250;
+  static const posterHeight = 250.0;
   static const posterFit = BoxFit.fitWidth;
-  static const String genresSubtitle = 'Genres: ';
+  static const genresSubtitle = 'Genres: ';
   static const releaseDateSubtitle = 'Release date: ';
   static const overviewSubtitle = 'Overview:';
+
+  @override
+  State<MovieOverview> createState() => _MovieOverviewState();
+}
+
+class _MovieOverviewState extends State<MovieOverview> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,56 +54,96 @@ class MovieOverview extends StatelessWidget {
           Expanded(
             child: Wrap(
               children: [
-                FutureBuilder(
-                  future: genres,
+                StreamBuilder(
+                  key: const Key(
+                    Keys.movieOverviewStreamBuilder,
+                  ),
+                  stream: widget.stream,
                   builder: (
                     BuildContext context,
                     AsyncSnapshot<dynamic> snapshot,
                   ) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          snapshot.error.toString(),
-                        ),
-                      );
-                    } else {
-                      return Text(
-                        '$genresSubtitle ${snapshot.data}',
-                        style: const TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: UIConstants.genresFontSize,
-                        ),
-                      );
+                    switch (snapshot.data?.state) {
+                      case BaseState.success:
+                        List<Genre> genres = GenreConverter().filterGenresById(
+                          widget.genresIds,
+                          snapshot.data!.genreList,
+                        );
+                        return Padding(
+                          key: const Key(
+                            Keys.movieOverviewPadding,
+                          ),
+                          padding: const EdgeInsets.all(
+                            UIConstants.defaultPadding,
+                          ),
+                          child: SizedBox(
+                            height: UIConstants.movieOverviewSizedBoxHeight,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: genres.length,
+                              itemBuilder: (
+                                BuildContext context,
+                                int index,
+                              ) {
+                                return GenreTile(
+                                  genre: genres[index],
+                                  key: const Key(
+                                    Keys.movieOverviewGenreTile,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      case BaseState.empty:
+                        return const Center(
+                          child: Text(
+                            UIConstants.emptyResponse,
+                          ),
+                        );
+                      case BaseState.failure:
+                        return snapshot.data!.error;
+                      case BaseState.loading:
+                        return snapshot.data!.loading;
+                      default:
+                        return const SizedBox();
                     }
                   },
                 ),
                 Text(
-                  '$releaseDateSubtitle $releaseDate',
+                  key: const Key(
+                    Keys.movieOverviewDate,
+                  ),
+                  '${MovieOverview.releaseDateSubtitle} ${widget.releaseDate}',
                   style: const TextStyle(
                     decoration: TextDecoration.underline,
                   ),
                 ),
                 const Text(
-                  overviewSubtitle,
+                  MovieOverview.overviewSubtitle,
                   style: TextStyle(
                     fontSize: UIConstants.subtitleFontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  overview,
+                  key: const Key(
+                    Keys.movieOverviewText,
+                  ),
+                  widget.overview,
                 ),
               ],
             ),
           ),
           Image(
-            image: NetworkImage(posterPath),
-            fit: posterFit,
-            height: posterHeight,
+            key: const Key(
+              Keys.movieOverviewPoster,
+            ),
+            image: NetworkImage(
+              widget.posterPath,
+            ),
+            fit: MovieOverview.posterFit,
+            height: MovieOverview.posterHeight,
           ),
         ],
       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../domain/entities/genre.dart';
-import '../../data/repository_implementation/local_repository.dart';
 import '../../domain/entities/movie.dart';
+import '../../domain/use_cases/implementation/genres_use_case.dart';
+import '../bloc/genres_bloc.dart';
 import '../widgets/movie_header.dart';
 import '../../core/util/ui_constants.dart';
 import '../widgets/movie_actions.dart';
@@ -20,15 +20,22 @@ class MovieDetails extends StatefulWidget {
 }
 
 class _MovieDetailsState extends State<MovieDetails> {
-  final LocalRepository repository = LocalRepository();
+  late final GenresBloc bloc;
   late final List<int> genresIds;
-  late Future<List<Genre>> genresList;
-  late final Future<List<String>> genresNames;
+
+
   @override
   void initState() {
+    bloc = GenresBloc(useCase: GenresUseCase());
+    bloc.getGenres();
     genresIds = widget.movie.genreIds;
-    genresNames = repository.getGenresByMovie(genresIds);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,8 +49,8 @@ class _MovieDetailsState extends State<MovieDetails> {
         ),
       ),
       appBar: AppBar(
-        title: const Text(
-          UIConstants.movieAppTitle,
+        title: Text(
+          widget.movie.title,
         ),
         backgroundColor: CupertinoColors.darkBackgroundGray,
         centerTitle: true,
@@ -86,10 +93,11 @@ class _MovieDetailsState extends State<MovieDetails> {
               widget.movie.voteCount,
             ),
             MovieOverview(
-              genresNames,
-              widget.movie.overview,
-              widget.movie.fullPosterPath,
-              widget.movie.releaseDate,
+              stream: bloc.allGenres,
+              genresIds: widget.movie.genreIds,
+              overview: widget.movie.overview,
+              posterPath: widget.movie.fullPosterPath,
+              releaseDate: widget.movie.releaseDate,
             ),
           ],
         ),

@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.black,
         ),
       ),
-      home: const Scaffold(
+      home: Scaffold(
         body: SafeArea(
           child: Center(
             child: HomePage(),

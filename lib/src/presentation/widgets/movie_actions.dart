@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../core/util/ui_constants.dart';
+import '../../core/util/widget_keys.dart';
 
 class MovieActions extends StatefulWidget {
   final double voteAverage;
   int voteCount;
+  String likesString = ' likes';
+  String likesAbreviation = '+999 likes';
 
   MovieActions(
     this.voteAverage,
@@ -20,9 +23,9 @@ class _MovieActionsState extends State<MovieActions> {
   Widget build(BuildContext context) {
     double fontSize = 20;
     var movieRatingText = '${widget.voteAverage}';
-    var likeCounterText = '${widget.voteCount} likes';
+    var likeCounterText = '${widget.voteCount} ${widget.likesString}';
     if (widget.voteCount > 999) {
-      likeCounterText = '+999 likes';
+      likeCounterText = widget.likesAbreviation;
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -42,6 +45,7 @@ class _MovieActionsState extends State<MovieActions> {
               ),
             ),
             ElevatedButton(
+              key: const Key(Keys.counterButton),
               onPressed: () {
                 setState(() {
                   widget.voteCount++;
@@ -52,6 +56,7 @@ class _MovieActionsState extends State<MovieActions> {
               ),
             ),
             Text(
+              key: const Key(Keys.likeCounterText),
               likeCounterText,
               style: const TextStyle(
                 fontSize: UIConstants.likeFontSize,
@@ -60,10 +65,11 @@ class _MovieActionsState extends State<MovieActions> {
           ],
         ),
         Container(
+          key: const Key(Keys.voteStar),
           decoration: const ShapeDecoration(
             color: Colors.redAccent,
             shape: StarBorder(
-              points: UIConstants.ratingStarPoints,
+
             ),
           ),
           child: Text(
